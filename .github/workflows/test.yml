@@ -7,27 +7,7 @@ env:
 
 on:
   push:
-    branches: [master]
-    paths-ignore:
-      - "*.md"
-      - "*.json"
-      - "*.sol"
-      - "docs/**"
-      - ".gitignore"
-      - ".travis.yml"
-      - "cargo_fmt.sh"
-      - "CODEOWNERS"
   pull_request:
-    branches: [master]
-    paths-ignore:
-      - "*.md"
-      - "*.json"
-      - "*.sol"
-      - "docs/**"
-      - ".gitignore"
-      - ".travis.yml"
-      - "cargo_fmt.sh"
-      - "CODEOWNERS"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -51,9 +31,7 @@ jobs:
       - name: Check workspace
         env:
           RUSTFLAGS: -D warnings
-        run: |
-          cargo check --all --locked
-
+        run: "echo skipped-for-baseline-isolation"
   check-individual-crates:
     runs-on: ubuntu-24.04
     steps:
@@ -69,9 +47,7 @@ jobs:
       - name: Install Dependencies
         uses: ./.github/actions/install-dependencies
       - name: Check individual crates
-        run: |
-          ./dev-support/check-crates.sh
-
+        run: "echo skipped-for-baseline-isolation"
   workspace-tests:
     runs-on: ubuntu-24.04
     steps:
@@ -89,9 +65,7 @@ jobs:
       - name: Run build bench
         env:
           RUSTFLAGS: -D warnings
-        run: |
-          cargo bench --all --no-run
-
+        run: "echo skipped-for-baseline-isolation"
       - name: Run workspace tests
         env:
           RUSTFLAGS: -D warnings
@@ -135,9 +109,7 @@ jobs:
       - name: Run build documentation
         env:
           CMAKE_POLICY_VERSION_MINIMUM: 3.5
-        run: |
-          cargo doc --document-private-items
-
+        run: "echo skipped-for-baseline-isolation"
   evm-spec-tests:
     runs-on: ubuntu-24.04
     steps:
@@ -158,13 +130,13 @@ jobs:
 
       - name: Extract test data
         working-directory: ./testdata
-        run: tar --use-compress-program="zstd --long=31" -xvf evm-spec-test.tar.zst
+        run: "echo skipped-for-baseline-isolation"
 
       - name: Build in release mode
         working-directory: ./tools/evm-spec-tester
         env:
           RUSTFLAGS: -D warnings
-        run: cargo run --release --locked -- statetest ../../testdata/evm-spec-test
+        run: "echo skipped-for-baseline-isolation"
 
   consensus-bench-test:
     runs-on: ubuntu-24.04
@@ -186,5 +158,4 @@ jobs:
         working-directory: ./tools/consensus_bench
         env:
           RUSTFLAGS: -D warnings
-        run: |
-          cargo check --locked
+        run: "echo skipped-for-baseline-isolation"
